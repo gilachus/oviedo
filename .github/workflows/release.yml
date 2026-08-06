@@ -1,0 +1,74 @@
+name: Create release with font assets
+
+# Triggered by pushing a tag matching bravura-*, e.g. bravura-1.4900 (see
+# https://github.com/steinbergmedia/bravura/issues/71 - previously the
+# only way to get a specific file like Bravura.otf was to download the
+# whole repository zip and extract it by hand).
+#
+# This does NOT build anything - redist/ is expected to already contain
+# the release's files at the tagged commit (built via the smufl
+# repository's tools/generate_font.py --generate-release, pointed at this
+# repo's redist/ folder, then committed and tagged here). This workflow
+# just publishes what's already there as a GitHub Release, with each file
+# individually downloadable and a stable per-version URL.
+
+on:
+  push:
+    tags:
+      - "bravura-*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to (re-)publish a release for, e.g. bravura-1.4900 - only needed for tags pushed before this workflow existed"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine tag
+        run: |
+          TAG="${{ inputs.tag || github.ref_name }}"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${TAG#bravura-}" >> "$GITHUB_ENV"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Extract this version's FONTLOG.txt entry for release notes
+        run: |
+          python3 .github/scripts/extract_changelog_entry.py redist/FONTLOG.txt "$VERSION" > /tmp/release-notes.md
+          cat /tmp/release-notes.md
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ASSETS=(
+            redist/otf/Bravura.otf
+            redist/otf/BravuraText.otf
+            redist/woff/Bravura.woff
+            redist/woff/Bravura.woff2
+            redist/woff/BravuraText.woff
+            redist/woff/BravuraText.woff2
+            redist/Bravura.json
+            redist/FONTLOG.txt
+            redist/OFL.txt
+            redist/OFL-FAQ.txt
+          )
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists - updating notes and assets"
+            gh release edit "$TAG" --title "Bravura $VERSION" --notes-file /tmp/release-notes.md
+            gh release upload "$TAG" "${ASSETS[@]}" --clobber
+          else
+            gh release create "$TAG" \
+              --title "Bravura $VERSION" \
+              --notes-file /tmp/release-notes.md \
+              "${ASSETS[@]}"
+          fi
