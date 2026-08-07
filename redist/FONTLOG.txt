@@ -495,8 +495,9 @@ Changelog
 22 October 2025 (Daniel Spreadbury) Bravura 1.456
 – Tweak to U+E000 (brace) to make it more similar to appearance prior to v1.451.
 
-6 August 2026 (Daniel Spreadbury) Bravura 1.4900
+6 August 2026 (Daniel Spreadbury) Bravura 1.480
 – Bravura is now built from UFO sources, which can be found at https://github.com/w3c-cg/smufl.
 – Bravura and Bravura Text are now generated using a new pipeline from UFO to OTF using fontmake and otfautohint.
 – ss05 stylistic set removed, its five oversized notehead glyphs (noteheadDoubleWhole, noteheadDoubleWholeSquare, noteheadWhole, noteheadHalf, noteheadBlack) merged into ss08.
 – Bravura Text's ~15,500 "combining staff position" ligatures previously overflowed the Private Use Area, spilling all the way up to U+13285 and colliding with other Unicode blocks; they now live entirely within U+F0000–U+F3CBF, Plane 15's Supplementary Private Use Area-A.
+– Version number corrected from the originally-released 1.4900 to 1.480, since head.fontRevision cannot actually represent a 4-digit fraction.
