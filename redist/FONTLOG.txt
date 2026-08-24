@@ -520,3 +520,9 @@ Changelog
 – Corrected appearance of articMarcatoBelowSmall and articMarcatoStaccatoBelowSmall, which should be turned rather than flipped (#96)
 – Corrected appearance of gClef8vbCClef (U+E056) (#98)
 – Made the diamond noteheads (U+E0D7, U+E0D9–U+E0DE) more substantial in size, better matching Behind Bars guidance and improving legibility (#95)
+
+24 August 2026 (Daniel Spreadbury) Bravura 1.482
+– Corrected the scaling of csymParensLeftTall, csymParensRightTall, csymBracketLeftTall, csymBracketRightTall, csymParensLeftVeryTall, csymParensRightVeryTall, csymAlteredBassSlash, and csymDiagonalArrangementSlash in Bravura Text, which had incorrectly picked up the same scaling as csymMinor (U+E874) in 1.481 (#80)
+– Reduced the size of the diamond noteheads (U+E0D7, U+E0D9–U+E0DE), which were too large following the change made in 1.481 (#95)
+– Added the 'accidentals' class to the Extended Helmholtz-Ellis accidentals supplement (U+EE50–U+EE59) and to accidentalHabaFlatThreeQuarterTonesLower (#322)
+– Corrected the documented range for optionalGlyphs in the specification (#320)
